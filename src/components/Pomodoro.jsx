@@ -1,10 +1,20 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import "./Pomodoro.css"; // Make sure to create this file for CSS styles
 // import startWorkSound from "./assets/sounds/start-work.mp3";
 // import endWorkSound from "./assets/sounds/end-work.mp3";
 // import endBreakSound from "./assets/sounds/end-break.mp3";
+
+const LOCAL_STORAGE_KEYS = {
+  timeLeft: "pomodoro_timeLeft",
+  isRunning: "pomodoro_isRunning",
+  isBreak: "pomodoro_isBreak",
+  pomodoroCount: "pomodoro_pomodoroCount",
+  workTime: "pomodoro_workTime",
+  shortBreakTime: "pomodoro_shortBreakTime",
+  longBreakTime: "pomodoro_longBreakTime",
+};
 
 const PomodoroTimer = () => {
   // Default timer durations in seconds
@@ -15,15 +25,67 @@ const PomodoroTimer = () => {
   //   const endWorkAudio = useRef(new Audio(endWorkSound));
   //   const endBreakAudio = useRef(new Audio(endBreakSound));
 
-  const [workTime, setWorkTime] = useState(defaultWorkTime);
-  const [shortBreakTime, setShortBreakTime] = useState(defaultShortBreakTime);
-  const [longBreakTime, setLongBreakTime] = useState(defaultLongBreakTime);
+  const [workTime, setWorkTime] = useState(() => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.workTime);
+    return saved ? Number(saved) : defaultWorkTime;
+  });
+  const [shortBreakTime, setShortBreakTime] = useState(() => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.shortBreakTime);
+    return saved ? Number(saved) : defaultShortBreakTime;
+  });
+  const [longBreakTime, setLongBreakTime] = useState(() => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.longBreakTime);
+    return saved ? Number(saved) : defaultLongBreakTime;
+  });
 
-  const [timeLeft, setTimeLeft] = useState(workTime);
-  const [isRunning, setIsRunning] = useState(false);
-  const [isBreak, setIsBreak] = useState(false); // Work or Break state
-  const [pomodoroCount, setPomodoroCount] = useState(0); // Completed Pomodoros
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.timeLeft);
+    return saved ? Number(saved) : workTime;
+  });
+
+  const [isRunning, setIsRunning] = useState(() => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.isRunning);
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  const [isBreak, setIsBreak] = useState(() => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.isBreak);
+    return saved ? JSON.parse(saved) : false;
+  });
+  const [pomodoroCount, setPomodoroCount] = useState(() => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.pomodoroCount);
+    return saved ? Number(saved) : 0;
+  });
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
+
+  // After initializing state and refs, add the following useEffect
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.workTime, workTime);
+  }, [workTime]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.shortBreakTime, shortBreakTime);
+  }, [shortBreakTime]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.longBreakTime, longBreakTime);
+  }, [longBreakTime]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.timeLeft, timeLeft);
+  }, [timeLeft]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.isRunning, isRunning);
+  }, [isRunning]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.isBreak, isBreak);
+  }, [isBreak]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.pomodoroCount, pomodoroCount);
+  }, [pomodoroCount]);
 
   // Toggle Start/Pause
   const toggleTimer = () => {
@@ -36,6 +98,12 @@ const PomodoroTimer = () => {
     setIsBreak(false);
     setPomodoroCount(0);
     setTimeLeft(workTime);
+
+    // Clear relevant localStorage items
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.timeLeft);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.isRunning);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.isBreak);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.pomodoroCount);
   };
 
   // Set default times
@@ -44,6 +112,18 @@ const PomodoroTimer = () => {
     setShortBreakTime(defaultShortBreakTime);
     setLongBreakTime(defaultLongBreakTime);
     setTimeLeft(defaultWorkTime); // Reset timer to default work time
+
+    // Update localStorage with default values
+    localStorage.setItem(LOCAL_STORAGE_KEYS.workTime, defaultWorkTime);
+    localStorage.setItem(
+      LOCAL_STORAGE_KEYS.shortBreakTime,
+      defaultShortBreakTime
+    );
+    localStorage.setItem(
+      LOCAL_STORAGE_KEYS.longBreakTime,
+      defaultLongBreakTime
+    );
+    localStorage.setItem(LOCAL_STORAGE_KEYS.timeLeft, defaultWorkTime);
   };
 
   // Open Modal
