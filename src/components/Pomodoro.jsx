@@ -314,12 +314,13 @@ const PomodoroTimer = () => {
               <li>Reducing mental fatigue and burnout.</li>
               <li>Tracking progress and productivity.</li>
             </ul>
-            <h3>Benefits</h3>
+            <h3>Tips for Using the Pomodoro Technique</h3>
             <ul>
-              <li>Improved time management skills.</li>
-              <li>Increased productivity and efficiency.</li>
-              <li>Better work-life balance.</li>
-              <li>Enhanced motivation and accountability.</li>
+              <li>Set clear and specific tasks for each pomodoro session.</li>
+              <li>Eliminate distractions during work intervals.</li>
+              <li>Take short 5-minute breaks to recharge between sessions.</li>
+              <li>After 4 pomodoros, take a longer break (15-30 minutes).</li>
+              <li>Track completed pomodoros to monitor productivity.</li>
             </ul>
             <p>
               By breaking work into manageable intervals and incorporating
