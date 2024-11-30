@@ -1,13 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import "./Pomodoro.css"; // Make sure to create this file for CSS styles
+// import startWorkSound from "./assets/sounds/start-work.mp3";
+// import endWorkSound from "./assets/sounds/end-work.mp3";
+// import endBreakSound from "./assets/sounds/end-break.mp3";
 
 const PomodoroTimer = () => {
   // Default timer durations in seconds
   const defaultWorkTime = 25 * 60; // 25 minutes
   const defaultShortBreakTime = 5 * 60; // 5 minutes
   const defaultLongBreakTime = 30 * 60; // 30 minutes
+  //   const startWorkAudio = useRef(new Audio(startWorkSound));
+  //   const endWorkAudio = useRef(new Audio(endWorkSound));
+  //   const endBreakAudio = useRef(new Audio(endBreakSound));
 
   const [workTime, setWorkTime] = useState(defaultWorkTime);
   const [shortBreakTime, setShortBreakTime] = useState(defaultShortBreakTime);
@@ -71,10 +77,15 @@ const PomodoroTimer = () => {
 
             if (isBreak) {
               // End of Break → Start Work Session
+              //   endBreakAudio.current.play(); // Play end break sound
               setIsBreak(false);
               setTimeLeft(workTime);
+              //   startWorkAudio.current.play().catch((error) => {
+              // console.error("Error playing end break sound:", error); // Play start work sound
             } else {
               // End of Work → Start Break
+              //   endWorkAudio.current.play().catch((error) => {
+              // console.error("Error playing end break sound:", error); // Play end work sound
               const newPomodoroCount = pomodoroCount + 1;
               setPomodoroCount(newPomodoroCount);
 
