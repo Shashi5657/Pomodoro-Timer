@@ -150,6 +150,7 @@ const PomodoroTimer = () => {
       </div>
 
       <div className="timer-settings-container">
+        <h3>Customise Pomodoro</h3>
         <div>
           <label className="timer-label">Work Time (minutes): </label>
           <input
