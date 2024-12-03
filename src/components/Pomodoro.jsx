@@ -116,12 +116,12 @@ const PomodoroTimer = () => {
 
   return (
     <div className="timer-container">
-      <h2>
+      <h2 className="timer-title">
         {isBreak
           ? pomodoroCount > 0 && pomodoroCount % 4 === 0
-            ? "Long Break"
-            : "Short Break"
-          : "Work Time"}
+            ? "🌙 Long Break 🌙"
+            : "☕ Short Break ☕"
+          : "💼 Work Time 💼"}
       </h2>
       <p>Pomodoros Completed: {pomodoroCount}</p>
       <div className="circular-progressbar-container">
@@ -129,7 +129,7 @@ const PomodoroTimer = () => {
           value={progressPercentage}
           text={formatTime(timeLeft)}
           styles={buildStyles({
-            textColor: "#000",
+            textColor: "#333",
             pathColor: isBreak
               ? pomodoroCount > 0 && pomodoroCount % 4 === 0
                 ? "#28a745" // Long Break - Green
@@ -141,8 +141,12 @@ const PomodoroTimer = () => {
         />
       </div>
       <div className="button-container">
-        <button onClick={toggleTimer}>{isRunning ? "Pause" : "Start"}</button>
-        <button onClick={resetTimer}>Reset</button>
+        <button className="start-pause-btn" onClick={toggleTimer}>
+          {isRunning ? "⏸ Pause" : "▶️ Start"}
+        </button>
+        <button className="reset-btn" onClick={resetTimer}>
+          🔄 Reset
+        </button>
       </div>
 
       <div className="timer-settings-container">

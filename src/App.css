@@ -1,0 +1,73 @@
+/* App.css */
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&family=Roboto:wght@400&display=swap");
+
+body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-container {
+  text-align: center;
+  background-color: #ffffffcc; /* Semi-transparent white */
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  max-width: 450px;
+  backdrop-filter: blur(10px);
+}
+
+.app-heading {
+  font-family: "Roboto Slab", serif;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.highlight {
+  font-size: 1.5rem;
+  vertical-align: middle;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+}
+
+/* Add to Pomodoro.css or App.css */
+
+@media (max-width: 500px) {
+  .app-container {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .timer-title {
+    font-size: 1.5rem;
+  }
+
+  .circular-progressbar-container {
+    width: 120px;
+    height: 120px;
+  }
+
+  .timer-settings-container {
+    padding: 1rem;
+  }
+}
