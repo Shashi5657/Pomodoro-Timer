@@ -1,178 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import styled from "styled-components";
-
-// Styled container for the timer
-const TimerContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  width: 300px;
-  margin: 0 auto;
-`;
-
-// Styled container for buttons
-const ButtonContainer = styled.div`
-  display: flex;
-  gap: 10px;
-
-  button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.2s;
-
-    &:hover {
-      opacity: 0.8;
-    }
-
-    &:nth-child(1) {
-      background-color: #007bff;
-    }
-
-    &:nth-child(2) {
-      background-color: #dc3545;
-    }
-  }
-`;
-
-// Styled floating information button
-const InfoButton = styled.button`
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #17a2b8;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #138496;
-  }
-`;
-
-// Styled modal overlay
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-// Styled modal content
-const ModalContent = styled.div`
-  background-color: white;
-  padding: 2rem;
-  width: 90%;
-  max-width: 500px;
-  border-radius: 10px;
-  position: relative;
-
-  h2 {
-    margin-top: 0;
-  }
-
-  p {
-    line-height: 1.6;
-  }
-`;
-
-// Styled close button for the modal
-const CloseButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-`;
-
-// Styling for timer customization section
-const TimerSettingsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 100%;
-  padding: 1rem;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const TimerLabel = styled.label`
-  font-size: 1rem;
-  font-weight: bold;
-  color: #333;
-`;
-
-const TimerInput = styled.input`
-  padding: 0.5rem;
-  font-size: 1rem;
-  width: 100%;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  margin-top: 5px;
-  background-color: #f0f0f0;
-  transition: all 0.3s;
-
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-    background-color: #fff;
-  }
-`;
-
-const ResetButton = styled.button`
-  padding: 0.6rem 1rem;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  width: 100%;
-  margin-top: 15px;
-  transition: 0.3s;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-const DefaultButton = styled.button`
-  padding: 0.6rem 1rem;
-  background-color: #17a2b8;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  width: 100%;
-  margin-top: 10px;
-  transition: 0.3s;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
+import "./Pomodoro.css"; // Make sure to create this file for CSS styles
 
 const PomodoroTimer = () => {
   // Default timer durations in seconds
@@ -286,7 +115,7 @@ const PomodoroTimer = () => {
   const progressPercentage = ((totalTime - timeLeft) / totalTime) * 100;
 
   return (
-    <TimerContainer>
+    <div className="timer-container">
       <h2>
         {isBreak
           ? pomodoroCount > 0 && pomodoroCount % 4 === 0
@@ -295,7 +124,7 @@ const PomodoroTimer = () => {
           : "Work Time"}
       </h2>
       <p>Pomodoros Completed: {pomodoroCount}</p>
-      <div style={{ width: 200, height: 200 }}>
+      <div className="circular-progressbar-container">
         <CircularProgressbar
           value={progressPercentage}
           text={formatTime(timeLeft)}
@@ -311,15 +140,16 @@ const PomodoroTimer = () => {
           })}
         />
       </div>
-      <ButtonContainer>
+      <div className="button-container">
         <button onClick={toggleTimer}>{isRunning ? "Pause" : "Start"}</button>
         <button onClick={resetTimer}>Reset</button>
-      </ButtonContainer>
+      </div>
 
-      <TimerSettingsContainer>
+      <div className="timer-settings-container">
         <div>
-          <TimerLabel>Work Time (minutes): </TimerLabel>
-          <TimerInput
+          <label className="timer-label">Work Time (minutes): </label>
+          <input
+            className="timer-input"
             type="number"
             value={workTime / 60}
             onChange={(e) => setWorkTime(Number(e.target.value) * 60)}
@@ -327,8 +157,9 @@ const PomodoroTimer = () => {
           />
         </div>
         <div>
-          <TimerLabel>Short Break Time (minutes): </TimerLabel>
-          <TimerInput
+          <label className="timer-label">Short Break Time (minutes): </label>
+          <input
+            className="timer-input"
             type="number"
             value={shortBreakTime / 60}
             onChange={(e) => setShortBreakTime(Number(e.target.value) * 60)}
@@ -336,33 +167,43 @@ const PomodoroTimer = () => {
           />
         </div>
         <div>
-          <TimerLabel>Long Break Time (minutes): </TimerLabel>
-          <TimerInput
+          <label className="timer-label">Long Break Time (minutes): </label>
+          <input
+            className="timer-input"
             type="number"
             value={longBreakTime / 60}
             onChange={(e) => setLongBreakTime(Number(e.target.value) * 60)}
             min="1"
           />
         </div>
-        <ResetButton onClick={resetTimer}>Reset Timer</ResetButton>
-        <DefaultButton onClick={setDefaultTimes}>Default Times</DefaultButton>
-      </TimerSettingsContainer>
+        <button className="reset-button" onClick={resetTimer}>
+          Reset Timer
+        </button>
+        <button className="default-button" onClick={setDefaultTimes}>
+          Default Times
+        </button>
+      </div>
 
       {/* Floating Information Button */}
-      <InfoButton
+      <button
+        className="info-button"
         onClick={openModal}
         aria-label="Learn about Pomodoro Technique"
       >
         ℹ️
-      </InfoButton>
+      </button>
 
       {/* Modal Component */}
       {isModalOpen && (
-        <ModalOverlay onClick={closeModal}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <CloseButton onClick={closeModal} aria-label="Close Modal">
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="close-button"
+              onClick={closeModal}
+              aria-label="Close Modal"
+            >
               &times;
-            </CloseButton>
+            </button>
             <h2>About the Pomodoro Technique</h2>
             <p>
               The Pomodoro Technique is a time management method developed by
@@ -389,10 +230,10 @@ const PomodoroTimer = () => {
               regular breaks, the Pomodoro Technique helps maintain high levels
               of productivity while minimizing burnout.
             </p>
-          </ModalContent>
-        </ModalOverlay>
+          </div>
+        </div>
       )}
-    </TimerContainer>
+    </div>
   );
 };
 
