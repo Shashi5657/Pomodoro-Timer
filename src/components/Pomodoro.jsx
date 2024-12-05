@@ -105,11 +105,84 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
+// Styling for timer customization section
+const TimerSettingsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const TimerLabel = styled.label`
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+`;
+
+const TimerInput = styled.input`
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  background-color: #f0f0f0;
+  transition: all 0.3s;
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    background-color: #fff;
+  }
+`;
+
+const ResetButton = styled.button`
+  padding: 0.6rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+  margin-top: 15px;
+  transition: 0.3s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const DefaultButton = styled.button`
+  padding: 0.6rem 1rem;
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+  margin-top: 10px;
+  transition: 0.3s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
 const PomodoroTimer = () => {
   // Default timer durations in seconds
-  const [workTime, setWorkTime] = useState(25 * 60); // 25 minutes
-  const [shortBreakTime, setShortBreakTime] = useState(5 * 60); // 5 minutes
-  const [longBreakTime, setLongBreakTime] = useState(30 * 60); // 30 minutes
+  const defaultWorkTime = 25 * 60; // 25 minutes
+  const defaultShortBreakTime = 5 * 60; // 5 minutes
+  const defaultLongBreakTime = 30 * 60; // 30 minutes
+
+  const [workTime, setWorkTime] = useState(defaultWorkTime);
+  const [shortBreakTime, setShortBreakTime] = useState(defaultShortBreakTime);
+  const [longBreakTime, setLongBreakTime] = useState(defaultLongBreakTime);
 
   const [timeLeft, setTimeLeft] = useState(workTime);
   const [isRunning, setIsRunning] = useState(false);
@@ -128,6 +201,14 @@ const PomodoroTimer = () => {
     setIsBreak(false);
     setPomodoroCount(0);
     setTimeLeft(workTime);
+  };
+
+  // Set default times
+  const setDefaultTimes = () => {
+    setWorkTime(defaultWorkTime);
+    setShortBreakTime(defaultShortBreakTime);
+    setLongBreakTime(defaultLongBreakTime);
+    setTimeLeft(defaultWorkTime); // Reset timer to default work time
   };
 
   // Open Modal
@@ -235,34 +316,37 @@ const PomodoroTimer = () => {
         <button onClick={resetTimer}>Reset</button>
       </ButtonContainer>
 
-      {/* Timer Settings */}
-      <div>
-        <h3>Customize Timer</h3>
+      <TimerSettingsContainer>
         <div>
-          <label>Work Time (minutes): </label>
-          <input
+          <TimerLabel>Work Time (minutes): </TimerLabel>
+          <TimerInput
             type="number"
             value={workTime / 60}
-            onChange={(e) => setWorkTime(e.target.value * 60)}
+            onChange={(e) => setWorkTime(Number(e.target.value) * 60)}
+            min="1"
           />
         </div>
         <div>
-          <label>Short Break Time (minutes): </label>
-          <input
+          <TimerLabel>Short Break Time (minutes): </TimerLabel>
+          <TimerInput
             type="number"
             value={shortBreakTime / 60}
-            onChange={(e) => setShortBreakTime(e.target.value * 60)}
+            onChange={(e) => setShortBreakTime(Number(e.target.value) * 60)}
+            min="1"
           />
         </div>
         <div>
-          <label>Long Break Time (minutes): </label>
-          <input
+          <TimerLabel>Long Break Time (minutes): </TimerLabel>
+          <TimerInput
             type="number"
             value={longBreakTime / 60}
-            onChange={(e) => setLongBreakTime(e.target.value * 60)}
+            onChange={(e) => setLongBreakTime(Number(e.target.value) * 60)}
+            min="1"
           />
         </div>
-      </div>
+        <ResetButton onClick={resetTimer}>Reset Timer</ResetButton>
+        <DefaultButton onClick={setDefaultTimes}>Default Times</DefaultButton>
+      </TimerSettingsContainer>
 
       {/* Floating Information Button */}
       <InfoButton
