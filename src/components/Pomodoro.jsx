@@ -106,12 +106,12 @@ const CloseButton = styled.button`
 `;
 
 const PomodoroTimer = () => {
-  // Timer durations in seconds
-  const WORK_TIME = 0.1 * 60; // 25 minutes
-  const SHORT_BREAK_TIME = 0.1 * 60; // 5 minutes
-  const LONG_BREAK_TIME = 0.2 * 60; // 30 minutes
+  // Default timer durations in seconds
+  const [workTime, setWorkTime] = useState(25 * 60); // 25 minutes
+  const [shortBreakTime, setShortBreakTime] = useState(5 * 60); // 5 minutes
+  const [longBreakTime, setLongBreakTime] = useState(30 * 60); // 30 minutes
 
-  const [timeLeft, setTimeLeft] = useState(WORK_TIME);
+  const [timeLeft, setTimeLeft] = useState(workTime);
   const [isRunning, setIsRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false); // Work or Break state
   const [pomodoroCount, setPomodoroCount] = useState(0); // Completed Pomodoros
@@ -127,7 +127,7 @@ const PomodoroTimer = () => {
     setIsRunning(false);
     setIsBreak(false);
     setPomodoroCount(0);
-    setTimeLeft(WORK_TIME);
+    setTimeLeft(workTime);
   };
 
   // Open Modal
@@ -162,7 +162,7 @@ const PomodoroTimer = () => {
             if (isBreak) {
               // End of Break → Start Work Session
               setIsBreak(false);
-              setTimeLeft(WORK_TIME);
+              setTimeLeft(workTime);
             } else {
               // End of Work → Start Break
               const newPomodoroCount = pomodoroCount + 1;
@@ -170,10 +170,10 @@ const PomodoroTimer = () => {
 
               if (newPomodoroCount % 4 === 0) {
                 setIsBreak(true);
-                setTimeLeft(LONG_BREAK_TIME);
+                setTimeLeft(longBreakTime);
               } else {
                 setIsBreak(true);
-                setTimeLeft(SHORT_BREAK_TIME);
+                setTimeLeft(shortBreakTime);
               }
             }
           }
@@ -186,14 +186,21 @@ const PomodoroTimer = () => {
     }
 
     return () => clearInterval(timer);
-  }, [isRunning, isBreak, pomodoroCount]);
+  }, [
+    isRunning,
+    isBreak,
+    pomodoroCount,
+    workTime,
+    shortBreakTime,
+    longBreakTime,
+  ]);
 
   // Calculate progress percentage
   const totalTime = isBreak
     ? pomodoroCount > 0 && pomodoroCount % 4 === 0
-      ? LONG_BREAK_TIME
-      : SHORT_BREAK_TIME
-    : WORK_TIME;
+      ? longBreakTime
+      : shortBreakTime
+    : workTime;
 
   const progressPercentage = ((totalTime - timeLeft) / totalTime) * 100;
 
@@ -228,6 +235,35 @@ const PomodoroTimer = () => {
         <button onClick={resetTimer}>Reset</button>
       </ButtonContainer>
 
+      {/* Timer Settings */}
+      <div>
+        <h3>Customize Timer</h3>
+        <div>
+          <label>Work Time (minutes): </label>
+          <input
+            type="number"
+            value={workTime / 60}
+            onChange={(e) => setWorkTime(e.target.value * 60)}
+          />
+        </div>
+        <div>
+          <label>Short Break Time (minutes): </label>
+          <input
+            type="number"
+            value={shortBreakTime / 60}
+            onChange={(e) => setShortBreakTime(e.target.value * 60)}
+          />
+        </div>
+        <div>
+          <label>Long Break Time (minutes): </label>
+          <input
+            type="number"
+            value={longBreakTime / 60}
+            onChange={(e) => setLongBreakTime(e.target.value * 60)}
+          />
+        </div>
+      </div>
+
       {/* Floating Information Button */}
       <InfoButton
         onClick={openModal}
@@ -248,7 +284,7 @@ const PomodoroTimer = () => {
               The Pomodoro Technique is a time management method developed by
               Francesco Cirillo in the late 1980s. It uses a timer to break work
               into intervals, traditionally 25 minutes in length, separated by
-              short breaks. These intervals are known as "pomodoros."
+              short breaks. These intervals are known as pomodoros.
             </p>
             <h3>Uses</h3>
             <ul>
