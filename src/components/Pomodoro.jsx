@@ -14,6 +14,7 @@ const TimerContainer = styled.div`
   margin: 0 auto;
 `;
 
+// Styled container for buttons
 const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
@@ -41,6 +42,69 @@ const ButtonContainer = styled.div`
   }
 `;
 
+// Styled floating information button
+const InfoButton = styled.button`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #138496;
+  }
+`;
+
+// Styled modal overlay
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+// Styled modal content
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  position: relative;
+
+  h2 {
+    margin-top: 0;
+  }
+
+  p {
+    line-height: 1.6;
+  }
+`;
+
+// Styled close button for the modal
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+`;
+
 const PomodoroTimer = () => {
   // Timer durations in seconds
   const WORK_TIME = 0.1 * 60; // 25 minutes
@@ -51,6 +115,7 @@ const PomodoroTimer = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false); // Work or Break state
   const [pomodoroCount, setPomodoroCount] = useState(0); // Completed Pomodoros
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
 
   // Toggle Start/Pause
   const toggleTimer = () => {
@@ -63,6 +128,16 @@ const PomodoroTimer = () => {
     setIsBreak(false);
     setPomodoroCount(0);
     setTimeLeft(WORK_TIME);
+  };
+
+  // Open Modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Close Modal
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   // Format time as MM:SS
@@ -152,6 +227,51 @@ const PomodoroTimer = () => {
         <button onClick={toggleTimer}>{isRunning ? "Pause" : "Start"}</button>
         <button onClick={resetTimer}>Reset</button>
       </ButtonContainer>
+
+      {/* Floating Information Button */}
+      <InfoButton
+        onClick={openModal}
+        aria-label="Learn about Pomodoro Technique"
+      >
+        ℹ️
+      </InfoButton>
+
+      {/* Modal Component */}
+      {isModalOpen && (
+        <ModalOverlay onClick={closeModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <CloseButton onClick={closeModal} aria-label="Close Modal">
+              &times;
+            </CloseButton>
+            <h2>About the Pomodoro Technique</h2>
+            <p>
+              The Pomodoro Technique is a time management method developed by
+              Francesco Cirillo in the late 1980s. It uses a timer to break work
+              into intervals, traditionally 25 minutes in length, separated by
+              short breaks. These intervals are known as "pomodoros."
+            </p>
+            <h3>Uses</h3>
+            <ul>
+              <li>Enhancing focus and concentration.</li>
+              <li>Managing time more effectively.</li>
+              <li>Reducing mental fatigue and burnout.</li>
+              <li>Tracking progress and productivity.</li>
+            </ul>
+            <h3>Benefits</h3>
+            <ul>
+              <li>Improved time management skills.</li>
+              <li>Increased productivity and efficiency.</li>
+              <li>Better work-life balance.</li>
+              <li>Enhanced motivation and accountability.</li>
+            </ul>
+            <p>
+              By breaking work into manageable intervals and incorporating
+              regular breaks, the Pomodoro Technique helps maintain high levels
+              of productivity while minimizing burnout.
+            </p>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </TimerContainer>
   );
 };
