@@ -42,7 +42,7 @@ const ButtonContainer = styled.div`
 `;
 
 const PomodoroTimer = () => {
-  // Set actual Pomodoro intervals in seconds
+  // Timer durations in seconds
   const WORK_TIME = 0.1 * 60; // 25 minutes
   const SHORT_BREAK_TIME = 0.1 * 60; // 5 minutes
   const LONG_BREAK_TIME = 0.2 * 60; // 30 minutes
@@ -50,7 +50,7 @@ const PomodoroTimer = () => {
   const [timeLeft, setTimeLeft] = useState(WORK_TIME);
   const [isRunning, setIsRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false); // Work or Break state
-  const [pomodoroCount, setPomodoroCount] = useState(0); // Full Pomodoro counter
+  const [pomodoroCount, setPomodoroCount] = useState(0); // Completed Pomodoros
 
   // Toggle Start/Pause
   const toggleTimer = () => {
@@ -90,20 +90,20 @@ const PomodoroTimer = () => {
               setTimeLeft(WORK_TIME);
             } else {
               // End of Work → Start Break
-              setIsBreak(true);
-              setPomodoroCount((prev) => prev + 1); // Increment after work session
+              const newPomodoroCount = pomodoroCount + 1;
+              setPomodoroCount(newPomodoroCount);
 
-              // Determine if it's time for a long break
-              if ((pomodoroCount + 1) % 4 === 0) {
+              if (newPomodoroCount % 4 === 0) {
+                setIsBreak(true);
                 setTimeLeft(LONG_BREAK_TIME);
               } else {
+                setIsBreak(true);
                 setTimeLeft(SHORT_BREAK_TIME);
               }
             }
-            return 0; // Reset current countdown
           }
 
-          return prevTime - 1;
+          return prevTime > 0 ? prevTime - 1 : 0;
         });
       }, 1000);
     } else {
@@ -126,7 +126,7 @@ const PomodoroTimer = () => {
     <TimerContainer>
       <h2>
         {isBreak
-          ? pomodoroCount % 4 === 0
+          ? pomodoroCount > 0 && pomodoroCount % 4 === 0
             ? "Long Break"
             : "Short Break"
           : "Work Time"}
@@ -139,10 +139,10 @@ const PomodoroTimer = () => {
           styles={buildStyles({
             textColor: "#000",
             pathColor: isBreak
-              ? pomodoroCount % 4 === 0
-                ? "#28a745" // Green for long break
-                : "#ffc107" // Yellow for short break
-              : "#dc3545", // Red for work
+              ? pomodoroCount > 0 && pomodoroCount % 4 === 0
+                ? "#28a745" // Long Break - Green
+                : "#ffc107" // Short Break - Yellow
+              : "#dc3545", // Work Time - Red
             trailColor: "#eee",
             textSize: "16px",
           })}
