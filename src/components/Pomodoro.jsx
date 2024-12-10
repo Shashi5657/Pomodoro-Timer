@@ -49,7 +49,8 @@ const PomodoroTimer = () => {
   const [timeLeft, setTimeLeft] = useState(WORK_TIME);
   const [isRunning, setIsRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false); // Work or Break state
-  const [pomodoroCount, setPomodoroCount] = useState(0); // Work session counter
+  const [pomodoroCount, setPomodoroCount] = useState(0); // Full Pomodoro counter
+  const [roundCount, setRoundCount] = useState(0); // Tracks work sessions before long break
 
   // Toggle Start/Pause
   const toggleTimer = () => {
@@ -61,6 +62,7 @@ const PomodoroTimer = () => {
     setIsRunning(false);
     setIsBreak(false);
     setPomodoroCount(0);
+    setRoundCount(0);
     setTimeLeft(WORK_TIME);
   };
 
@@ -87,21 +89,20 @@ const PomodoroTimer = () => {
               // End of Break → Start Work Session
               setIsBreak(false);
               setTimeLeft(WORK_TIME);
+              setPomodoroCount((prev) => prev + 1); // Increment pomodoroCount ONLY here
             } else {
-              // End of Work → Increase Pomodoro Count
-              setPomodoroCount((prevCount) => {
-                const newCount = prevCount + 1;
+              // End of Work → Start Break
+              setIsBreak(true);
+              setRoundCount((prevRound) => {
+                const newRound = prevRound + 1;
 
-                // After 4 Pomodoros, take a Long Break
-                if (newCount % 4 === 0) {
-                  setIsBreak(true);
-                  setTimeLeft(LONG_BREAK_TIME);
+                if (newRound % 4 === 0) {
+                  setTimeLeft(LONG_BREAK_TIME); // Start Long Break
                 } else {
-                  setIsBreak(true);
-                  setTimeLeft(SHORT_BREAK_TIME);
+                  setTimeLeft(SHORT_BREAK_TIME); // Start Short Break
                 }
 
-                return newCount;
+                return newRound;
               });
             }
           }
@@ -118,7 +119,7 @@ const PomodoroTimer = () => {
 
   // Calculate progress percentage
   const totalTime = isBreak
-    ? pomodoroCount % 4 === 0
+    ? roundCount % 4 === 0 && pomodoroCount > 0
       ? LONG_BREAK_TIME
       : SHORT_BREAK_TIME
     : WORK_TIME;
@@ -129,7 +130,7 @@ const PomodoroTimer = () => {
     <TimerContainer>
       <h2>
         {isBreak
-          ? pomodoroCount % 4 === 0
+          ? roundCount % 4 === 0 && pomodoroCount > 0
             ? "Long Break"
             : "Short Break"
           : "Work Time"}
@@ -142,7 +143,7 @@ const PomodoroTimer = () => {
           styles={buildStyles({
             textColor: "#000",
             pathColor: isBreak
-              ? pomodoroCount % 4 === 0
+              ? roundCount % 4 === 0 && pomodoroCount > 0
                 ? "#28a745"
                 : "#ffc107"
               : "#dc3545",
