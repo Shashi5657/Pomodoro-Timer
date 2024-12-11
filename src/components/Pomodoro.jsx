@@ -42,12 +42,14 @@ const ButtonContainer = styled.div`
 `;
 
 const PomodoroTimer = () => {
-  const WORK_TIME = 25 * 60; // 25 minutes in seconds
-  const BREAK_TIME = 5 * 60; // 5 minutes in seconds
+  const WORK_TIME = 0.1 * 60; // 25 minutes in seconds
+  const SHORT_BREAK_TIME = 0.1 * 60; // 5 minutes in seconds
+  const LONG_BREAK_TIME = 0.2 * 60; // 30 minutes in seconds
 
   const [timeLeft, setTimeLeft] = useState(WORK_TIME);
   const [isRunning, setIsRunning] = useState(false);
-  const [isBreak, setIsBreak] = useState(false); // Track Work/Break state
+  const [isBreak, setIsBreak] = useState(false); // Work or Break state
+  const [pomodoroCount, setPomodoroCount] = useState(0); // Work session counter
 
   // Toggle Start/Pause
   const toggleTimer = () => {
@@ -58,6 +60,7 @@ const PomodoroTimer = () => {
   const resetTimer = () => {
     setIsRunning(false);
     setIsBreak(false);
+    setPomodoroCount(0);
     setTimeLeft(WORK_TIME);
   };
 
@@ -79,10 +82,30 @@ const PomodoroTimer = () => {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1) {
             clearInterval(timer);
-            const nextTime = isBreak ? WORK_TIME : BREAK_TIME; // Switch to Break or Work
-            setIsBreak((prev) => !prev); // Toggle state
-            return nextTime; // Set new time
+
+            if (isBreak) {
+              // End of Break → Start Work Session
+              setIsBreak(false);
+              setTimeLeft(WORK_TIME);
+            } else {
+              // End of Work → Increase Pomodoro Count
+              setPomodoroCount((prevCount) => {
+                const newCount = prevCount + 1;
+
+                // After 4 Pomodoros, take a Long Break
+                if (newCount % 4 === 0) {
+                  setIsBreak(true);
+                  setTimeLeft(LONG_BREAK_TIME);
+                } else {
+                  setIsBreak(true);
+                  setTimeLeft(SHORT_BREAK_TIME);
+                }
+
+                return newCount;
+              });
+            }
           }
+
           return prevTime - 1;
         });
       }, 1000);
@@ -94,19 +117,35 @@ const PomodoroTimer = () => {
   }, [isRunning, isBreak]);
 
   // Calculate progress percentage
-  const totalTime = isBreak ? BREAK_TIME : WORK_TIME;
+  const totalTime = isBreak
+    ? pomodoroCount % 4 === 0
+      ? LONG_BREAK_TIME
+      : SHORT_BREAK_TIME
+    : WORK_TIME;
+
   const progressPercentage = ((totalTime - timeLeft) / totalTime) * 100;
 
   return (
     <TimerContainer>
-      <h2>{isBreak ? "Break Time" : "Work Time"}</h2>
+      <h2>
+        {isBreak
+          ? pomodoroCount % 4 === 0
+            ? "Long Break"
+            : "Short Break"
+          : "Work Time"}
+      </h2>
+      <p>Pomodoros Completed: {pomodoroCount}</p>
       <div style={{ width: 200, height: 200 }}>
         <CircularProgressbar
           value={progressPercentage}
           text={formatTime(timeLeft)}
           styles={buildStyles({
             textColor: "#000",
-            pathColor: isBreak ? "#28a745" : "#dc3545", // Green for Break, Red for Work
+            pathColor: isBreak
+              ? pomodoroCount % 4 === 0
+                ? "#28a745"
+                : "#ffc107"
+              : "#dc3545",
             trailColor: "#eee",
             textSize: "16px",
           })}
