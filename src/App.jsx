@@ -2,7 +2,7 @@ import "./App.css";
 
 function App() {
   return (
-    <div>
+    <div className="app-container">
       <h2>Pomodoro Timer</h2>
     </div>
   );
